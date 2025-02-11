@@ -20,7 +20,7 @@ config:
 
 
 # existingSecret and secret are exclusive, with existingSecret taking priority.
-existingSecret: "n8n" # Use an existing Kubernetes secret, e.g created by hand or Vault operator.
+existingSecret: "n8n-secret" # Use an existing Kubernetes secret, e.g created by hand or Vault operator.
 # Dict with all n8n json config options, unlike config the values here will end up in a secret.
 
 
