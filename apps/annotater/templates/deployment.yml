@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: annotater
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: annotater
+  template:
+    metadata:
+      labels:
+        app: annotater
+    spec:
+      containers:
+        - name: annotater
+          image: gbifnorway/annotater:latest
+          imagePullPolicy: Always
+          env:
+            - name: SQL_HOST
+              value: db-pgsql-gbif-norway-do-user-11560878-0.b.db.ondigitalocean.com
+            - name: SQL_PORT
+              value: '25060'
+            - name: SQL_ENGINE
+              value: django.db.backends.postgresql
+            - name: SQL_DATABASE
+              value: annotater
+            - name: SQL_USER
+              value: doadmin
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgsql-secret
+                  key: password
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "1"
+            requests:
+              memory: 256Mi
+              cpu: "0.2"

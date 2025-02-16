@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: annotater-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+spec:
+  defaultBackend:
+      service:
+        name: annotater
+        port:
+          number: 80
+  rules:
+    - host: annotater.svc.gbif.no
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: annotater
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - annotater.svc.gbif.no
+      secretName: annotater-cert
