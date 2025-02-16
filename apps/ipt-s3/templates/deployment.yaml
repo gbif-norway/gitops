@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-ipt-ss
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-ipt
+  serviceName: {{ .Release.Name }}-ipt
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-ipt
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-ipt
+        image: gbifnorway/ipt-s3:{{ .Values.containerImageTag }}
+        imagePullPolicy: Always
+        env:
+          - name: S3_BUCKET_NAME
+            value: ipt-{{ .Release.Name }}
+          - name: S3_HOST
+            valueFrom:
+              secretKeyRef:
+                name: s3-secret
+                key: s3-host
+          - name: S3_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: s3-secret
+                key: s3-access-key
+          - name: S3_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: s3-secret
+                key: s3-secret-key
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - SYS_ADMIN
+        resources:
+          limits:
+            memory: 1024Mi
+            cpu: "1"
+          requests:
+            memory: 512Mi
+            cpu: "0.5"
+        ports:
+        - containerPort: 8080
+          name: {{ .Release.Name }}-ipt
+        volumeMounts:
+        - name: {{ .Release.Name }}-pvc
+          mountPath: /srv/ipt/
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Release.Name }}-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistentStorage }}
+      storageClassName: do-block-storage

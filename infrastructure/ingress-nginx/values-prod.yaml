@@ -1,0 +1,17 @@
+controller:
+  service:
+    annotations: {}
+    # Ensure we keep the same LoadBalancer IP by setting loadBalancerIP
+    # You'll need to replace this with your actual current IP
+    loadBalancerIP: "178.128.137.224" # Replace with your actual IP
+
+    # Keep default service type
+    type: LoadBalancer
+
+# Maintain default RBAC settings
+rbac:
+  create: true
+
+# Maintain default ServiceAccount settings
+serviceAccount:
+  create: true

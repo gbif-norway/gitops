@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ipt-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+spec:
+  rules:
+    - host: {{ default (print .Release.Name ".ipt.gbif.no") .Values.hostName }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ .Release.Name }}-ipt
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - {{ default (print .Release.Name ".ipt.gbif.no") .Values.hostName }}
+      secretName: {{ .Release.Name }}-ipt-cert
