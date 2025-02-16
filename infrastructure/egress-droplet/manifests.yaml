@@ -1,3 +1,22 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-do
+spec:
+  package: "crossplane/provider-digitalocean:v0.2.0-rc.0.42.g0932045-main"
+---
+apiVersion: do.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: do-provider-config
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: do-api-token
+      key: do-api-token
+---
 apiVersion: compute.do.crossplane.io/v1alpha1
 kind: Droplet
 metadata:
