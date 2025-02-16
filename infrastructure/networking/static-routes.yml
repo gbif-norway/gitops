@@ -1,0 +1,9 @@
+apiVersion: networking.digitalocean.com/v1
+kind: StaticRoute
+metadata:
+  name: public-egress
+spec:
+  destinations:
+    - 85.196.85.67/32  # The biofokus database
+    - 129.240.118.168/32  # The MUSIT database
+  gateway: 10.110.0.2
