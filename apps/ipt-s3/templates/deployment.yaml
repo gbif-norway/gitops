@@ -1,13 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-ipt-ss
+  name: {{ .Release.Name }}-ipt
 spec:
+  strategy:
+    type: Recreate
+  replicas: 1
   selector:
     matchLabels:
       app: {{ .Release.Name }}-ipt
-  serviceName: {{ .Release.Name }}-ipt
-  replicas: 1
   template:
     metadata:
       labels:
@@ -16,6 +17,22 @@ spec:
       containers:
       - name: {{ .Release.Name }}-ipt
         image: gbifnorway/ipt-s3:{{ .Values.containerImageTag }}
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 1024Mi
+            cpu: "1"
+          requests:
+            memory: 512Mi
+            cpu: "0.5"
+        ports:
+        - containerPort: 8080
+          name: {{ .Release.Name }}-ipt
+        volumeMounts:
+        - name: pvc
+          mountPath: /srv/ipt/
+      - name: {{ .Release.Name }}-ipt-sidecar
+        image: gbifnorway/ipt-sidecar:{{ .Values.containerImageTag }}
         imagePullPolicy: Always
         env:
           - name: S3_BUCKET_NAME
@@ -35,30 +52,24 @@ spec:
               secretKeyRef:
                 name: s3-secret
                 key: s3-secret-key
-        securityContext:
-          privileged: true
-          capabilities:
-            add:
-              - SYS_ADMIN
+          - name: S3_ZIP_BUCKET_NAME
+            value: {{ .Values.zipBucket }}
+          - name: DISCORD_WEBHOOK_URL
+            valueFrom:
+              secretKeyRef:
+                name: discord-webhook-url
+                key: webhook-url
         resources:
           limits:
-            memory: 1024Mi
-            cpu: "1"
-          requests:
             memory: 512Mi
             cpu: "0.5"
-        ports:
-        - containerPort: 8080
-          name: {{ .Release.Name }}-ipt
+          requests:
+            memory: 256Mi
+            cpu: "0.25"
         volumeMounts:
-        - name: {{ .Release.Name }}-pvc
+        - name: pvc
           mountPath: /srv/ipt/
-  volumeClaimTemplates:
-  - metadata:
-      name: {{ .Release.Name }}-pvc
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.persistentStorage }}
-      storageClassName: do-block-storage
+      volumes:
+      - name: pvc
+        persistentVolumeClaim:
+          claimName: {{ default (printf "%s-pvc-retain" .Release.Name) .Values.pvcName }}

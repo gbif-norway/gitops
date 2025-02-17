@@ -3,5 +3,7 @@
 # Declare variables to be passed into your templates.
 
 persistentStorage: 1G
-containerImageTag: "latest"
-# hostName: ipt.gbif.no
+containerImageTag: latest
+pvcName: null
+hostName: null #ipt.gbif.no
+zipBucket: null
