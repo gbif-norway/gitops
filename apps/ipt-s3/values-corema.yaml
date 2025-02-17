@@ -1,5 +1,5 @@
 persistentStorage: 2Gi
 containerImageTag: latest
 pvcName: null
-hostName: ipt.gbif.no
+hostName: null
 zipBucket: corema-exports/gbif
