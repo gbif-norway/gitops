@@ -468,20 +468,13 @@ server:
   # Used to define custom readinessProbe settings
   readinessProbe:
     enabled: true
-    # If you need to use a http path instead of the default exec
-    # path: /v1/sys/health?standbyok=true
-
-    # Port number on which readinessProbe will be checked.
+    path: "/v1/sys/health?standbyok=true"
     port: 8200
-    # When a probe fails, Kubernetes will try failureThreshold times before giving up
+    scheme: HTTPS
     failureThreshold: 2
-    # Number of seconds after the container has started before probe initiates
     initialDelaySeconds: 5
-    # How often (in seconds) to perform the probe
     periodSeconds: 5
-    # Minimum consecutive successes for the probe to be considered successful after having failed
     successThreshold: 1
-    # Number of seconds after which the probe times out.
     timeoutSeconds: 3
   # Used to enable a livenessProbe for the pods
   livenessProbe:
