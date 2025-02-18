@@ -407,13 +407,12 @@ server:
   # In order to expose the service, use the route section below
   ingress:
     enabled: true
+    pathType: Prefix
     annotations:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: "letsencrypt"
     hosts:
       - host: vault.svc.gbif.no
-        paths: ["/"]
-        pathType: Prefix
     tls:
       - secretName: vault-tls
         hosts:
