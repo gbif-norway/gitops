@@ -448,16 +448,6 @@ server:
   authDelegator:
     enabled: true
 
-  # extraInitContainers is a list of init containers. Specified as a YAML list.
-  extraInitContainers:
-    - name: wait-for-tls
-      image: busybox
-      command: ['sh', '-c', 'until test -f /vault/tls/tls.crt; do echo waiting for certificate; sleep 2; done']
-      volumeMounts:
-        - name: vault-tls
-          mountPath: /vault/tls
-          readOnly: true
-
   # extraContainers is a list of sidecar containers. Specified as a YAML list.
   extraContainers: null
 
