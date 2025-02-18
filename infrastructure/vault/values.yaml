@@ -540,7 +540,7 @@ server:
   # an array of objects, examples are shown below.
   extraVolumes:
     - type: secret
-      name: vault-tls
+      name: userconfig-vault-tls
       path: "/vault/tls"
 
   # volumes is a list of volumes made available to all containers. These are rendered
