@@ -792,6 +792,11 @@ server:
       ui = true
 
       listener "tcp" {
+        tls_disable = 1        # Disable TLS for local connections
+        address = "127.0.0.1:8200"  # Local-only listener
+      }
+
+      listener "tcp" {
         tls_disable = 0
         address = "[::]:8200"
         cluster_address = "[::]:8201"
@@ -799,6 +804,7 @@ server:
         tls_key_file = "/vault/tls/userconfig-vault-tls/tls.key"
         tls_disable_client_certs = true
       }
+
       storage "file" {
         path = "/vault/data"
       }
