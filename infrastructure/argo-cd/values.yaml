@@ -2599,6 +2599,8 @@ repoServer:
 
   # Keep existing volume configuration
   useEphemeralHelmWorkingDir: true
+  existingVolumes:
+    helmWorkingDir: {}
 
   # -- Toggle the usage of a ephemeral Helm working directory
   useEphemeralHelmWorkingDir: true
