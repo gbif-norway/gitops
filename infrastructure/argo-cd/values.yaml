@@ -416,44 +416,20 @@ configs:
   # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
   cmp:
     # -- Create the argocd-cmp-cm configmap
-    create: false
+    create: true
 
     # -- Annotations to be added to argocd-cmp-cm configmap
     annotations: {}
 
     # -- Plugin yaml files to be added to argocd-cmp-cm
-    plugins: {}
-      # --- First plugin
-      # my-plugin:
-      #   init:
-      #     command: [sh]
-      #     args: [-c, 'echo "Initializing..."']
-      #   generate:
-      #     command: [sh, -c]
-      #     args:
-      #       - |
-      #         echo "{\"kind\": \"ConfigMap\", \"apiVersion\": \"v1\", \"metadata\": { \"name\": \"$ARGOCD_APP_NAME\", \"namespace\": \"$ARGOCD_APP_NAMESPACE\", \"annotations\": {\"Foo\": \"$ARGOCD_ENV_FOO\", \"KubeVersion\": \"$KUBE_VERSION\", \"KubeApiVersion\": \"$KUBE_API_VERSIONS\",\"Bar\": \"baz\"}}}"
-      #   discover:
-      #     fileName: "./subdir/s*.yaml"
-      #     find:
-      #       glob: "**/Chart.yaml"
-      #       command: [sh, -c, find . -name env.yaml]
-
-      # --- Second plugin
-      # my-plugin2:
-      #   init:
-      #     command: [sh]
-      #     args: [-c, 'echo "Initializing..."']
-      #   generate:
-      #     command: [sh, -c]
-      #     args:
-      #       - |
-      #         echo "{\"kind\": \"ConfigMap\", \"apiVersion\": \"v1\", \"metadata\": { \"name\": \"$ARGOCD_APP_NAME\", \"namespace\": \"$ARGOCD_APP_NAMESPACE\", \"annotations\": {\"Foo\": \"$ARGOCD_ENV_FOO\", \"KubeVersion\": \"$KUBE_VERSION\", \"KubeApiVersion\": \"$KUBE_API_VERSIONS\",\"Bar\": \"baz\"}}}"
-      #   discover:
-      #     fileName: "./subdir/s*.yaml"
-      #     find:
-      #       glob: "**/Chart.yaml"
-      #       command: [sh, -c, find . -name env.yaml]
+    plugins:
+      avp:
+        init:
+          command: [sh, -c]
+          args: ["cp -r /custom-tools/* /tmp/custom-tools/"]
+        generate:
+          command: [argocd-vault-plugin]
+          args: ["generate", "./"]
 
   # -- Provide one or multiple [external cluster credentials]
   # @default -- `{}` (See [values.yaml])
@@ -716,27 +692,25 @@ controller:
   ## you could use this (and the same in the server pod) to provide such executable
   ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/authentication/#client-go-credential-plugins
   ## Note: Supports use of custom Helm templates
-  initContainers: []
-  #  - name: download-tools
-  #    image: alpine:3
-  #    command: [sh, -c]
-  #    args:
-  #      - wget -qO kubelogin.zip https://github.com/Azure/kubelogin/releases/download/v0.0.25/kubelogin-linux-amd64.zip &&
-  #        unzip kubelogin.zip && mv bin/linux_amd64/kubelogin /custom-tools/
-  #    volumeMounts:
-  #      - mountPath: /custom-tools
-  #        name: custom-tools
+  initContainers:
+    - name: download-tools
+      image: ghcr.io/argoproj-labs/argocd-vault-plugin:v1.18.1
+      command: [sh, -c]
+      args:
+        - cp -r /usr/local/bin/argocd-vault-plugin /custom-tools/
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
 
   # -- Additional volumeMounts to the application controller main container
-  volumeMounts: []
-  #  - mountPath: /usr/local/bin/kubelogin
-  #    name: custom-tools
-  #    subPath: kubelogin
+  volumeMounts:
+    - mountPath: /tmp/custom-tools
+      name: custom-tools
 
   # -- Additional volumes to the application controller pod
-  volumes: []
-  #  - name: custom-tools
-  #    emptyDir: {}
+  volumes:
+    - name: custom-tools
+      emptyDir: {}
 
   ## Application controller emptyDir volumes
   emptyDir:
