@@ -694,10 +694,12 @@ controller:
   ## Note: Supports use of custom Helm templates
   initContainers:
     - name: download-tools
-      image: ghcr.io/argoproj-labs/argocd-vault-plugin:v1.18.1
+      image: curlimages/curl:8.6.0
       command: [sh, -c]
       args:
-        - cp -r /usr/local/bin/argocd-vault-plugin /custom-tools/
+        - |
+          curl -L -o /custom-tools/argocd-vault-plugin https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.18.1/argocd-vault-plugin_1.18.1_linux_amd64 && \
+          chmod +x /custom-tools/argocd-vault-plugin
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
