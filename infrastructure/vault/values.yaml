@@ -541,8 +541,8 @@ server:
   # an array of objects, examples are shown below.
   extraVolumes:
     - type: secret
-      name: "vault-tls"
-      path: "/vault/userconfig/vault-tls"
+      name: "userconfig-vault-tls"
+      path: "/vault/tls"
 
   # volumes is a list of volumes made available to all containers. These are rendered
   # via toYaml rather than pre-processed like the extraVolumes value.
@@ -797,8 +797,8 @@ server:
         tls_disable = 0
         address = "[::]:8200"
         cluster_address = "[::]:8201"
-        tls_cert_file = "/vault/userconfig/vault-tls/tls.crt"
-        tls_key_file = "/vault/userconfig/vault-tls/tls.key"
+        tls_cert_file = "/vault/tls/userconfig-vault-tls/tls.crt"
+        tls_key_file = "/vault/tls/userconfig-vault-tls/tls.key"
       }
       storage "file" {
         path = "/vault/data"
