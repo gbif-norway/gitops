@@ -449,21 +449,14 @@ server:
     enabled: true
 
   # extraInitContainers is a list of init containers. Specified as a YAML list.
-  extraInitContainers: null
-    # # This example installs a plugin pulled from github into the /usr/local/libexec/vault/oauthapp folder,
-    # # which is defined in the volumes value.
-    # - name: oauthapp
-    #   image: "alpine"
-    #   command: [sh, -c]
-    #   args:
-    #     - cd /tmp &&
-    #       wget https://github.com/puppetlabs/vault-plugin-secrets-oauthapp/releases/download/v1.2.0/vault-plugin-secrets-oauthapp-v1.2.0-linux-amd64.tar.xz -O oauthapp.xz &&
-    #       tar -xf oauthapp.xz &&
-    #       mv vault-plugin-secrets-oauthapp-v1.2.0-linux-amd64 /usr/local/libexec/vault/oauthapp &&
-    #       chmod +x /usr/local/libexec/vault/oauthapp
-    #   volumeMounts:
-    #     - name: plugins
-    #       mountPath: /usr/local/libexec/vault
+  extraInitContainers:
+    - name: wait-for-tls
+      image: busybox
+      command: ['sh', '-c', 'until test -f /vault/tls/tls.crt; do echo waiting for certificate; sleep 2; done']
+      volumeMounts:
+        - name: userconfig-vault-tls
+          mountPath: /vault/tls
+          readOnly: true
 
   # extraContainers is a list of sidecar containers. Specified as a YAML list.
   extraContainers: null
@@ -484,20 +477,11 @@ server:
   # Used to define custom readinessProbe settings
   readinessProbe:
     enabled: true
-    # If you need to use a http path instead of the default exec
-    # path: /v1/sys/health?standbyok=true
-
-    # Port number on which readinessProbe will be checked.
-    port: 8200
-    # When a probe fails, Kubernetes will try failureThreshold times before giving up
+    path: "/v1/sys/health?standbyok=true"
     failureThreshold: 2
-    # Number of seconds after the container has started before probe initiates
     initialDelaySeconds: 5
-    # How often (in seconds) to perform the probe
     periodSeconds: 5
-    # Minimum consecutive successes for the probe to be considered successful after having failed
     successThreshold: 1
-    # Number of seconds after which the probe times out.
     timeoutSeconds: 3
   # Used to enable a livenessProbe for the pods
   livenessProbe:
