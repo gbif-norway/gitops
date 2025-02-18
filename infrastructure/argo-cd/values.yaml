@@ -2570,36 +2570,28 @@ repoServer:
     #       name: cmp-tmp
 
   # -- Init containers to add to the repo server pods
-  initContainers: []
+  initContainers:
+    - name: download-tools
+      image: alpine:3.8
+      command: [sh, -c]
+      args:
+        - wget -O /custom-tools/argocd-vault-plugin
+          https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.18.1/argocd-vault-plugin_1.18.1_linux_amd64&&
+          chmod +x /custom-tools/argocd-vault-plugin
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
 
   # -- Additional volumeMounts to the repo server main container
-  volumeMounts: []
+  volumeMounts:
+    - name: custom-tools
+      mountPath: /usr/local/bin/argocd-vault-plugin
+      subPath: argocd-vault-plugin
 
   # -- Additional volumes to the repo server pod
-  volumes: []
-  #  - name: argocd-cmp-cm
-  #    configMap:
-  #      name: argocd-cmp-cm
-  #  - name: cmp-tmp
-  #    emptyDir: {}
-
-  # -- Volumes to be used in replacement of emptydir on default volumes
-  existingVolumes: {}
-  #  gpgKeyring:
-  #    persistentVolumeClaim:
-  #      claimName: pvc-argocd-repo-server-keyring
-  #  helmWorkingDir:
-  #    persistentVolumeClaim:
-  #      claimName: pvc-argocd-repo-server-workdir
-  #  tmp:
-  #    persistentVolumeClaim:
-  #      claimName: pvc-argocd-repo-server-tmp
-  #  varFiles:
-  #    persistentVolumeClaim:
-  #      claimName: pvc-argocd-repo-server-varfiles
-  #  plugins:
-  #    persistentVolumeClaim:
-  #      claimName: pvc-argocd-repo-server-plugins
+  volumes:
+    - name: custom-tools
+      emptyDir: {}
 
   ## RepoServer emptyDir volumes
   emptyDir:
