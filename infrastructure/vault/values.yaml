@@ -415,7 +415,7 @@ server:
       - host: vault.svc.gbif.no
         paths: ["/"]
     tls:
-      - secretName: vault-tls
+      - secretName: userconfig-vault-tls
         hosts:
           - vault.svc.gbif.no
 
@@ -541,7 +541,7 @@ server:
   # an array of objects, examples are shown below.
   extraVolumes:
     - type: secret
-      name: "vault-tls"
+      name: "userconfig-vault-tls"
       path: "/vault/userconfig/vault-tls"
 
   # volumes is a list of volumes made available to all containers. These are rendered
