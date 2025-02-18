@@ -470,6 +470,7 @@ server:
     enabled: true
     path: "/v1/sys/health?standbyok=true&sealedok=true"
     scheme: HTTPS
+    port: 8200
     failureThreshold: 2
     initialDelaySeconds: 5
     periodSeconds: 5
@@ -791,10 +792,6 @@ server:
         cluster_address = "[::]:8201"
         tls_cert_file = "/vault/tls/userconfig-vault-tls/tls.crt"
         tls_key_file = "/vault/tls/userconfig-vault-tls/tls.key"
-        telemetry {
-          unauthenticated_metrics_access = true
-        }
-        disable_clustering = true
       }
       storage "file" {
         path = "/vault/data"
