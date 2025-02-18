@@ -468,9 +468,11 @@ server:
   # Used to define custom readinessProbe settings
   readinessProbe:
     enabled: true
-    path: "/v1/sys/health?standbyok=true&sealedok=true"
-    scheme: HTTPS
-    port: 8200
+    exec:
+      command:
+      - /bin/sh
+      - -ec
+      - vault status
     failureThreshold: 2
     initialDelaySeconds: 5
     periodSeconds: 5
