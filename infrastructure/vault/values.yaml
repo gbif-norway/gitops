@@ -803,8 +803,13 @@ server:
         path = "/vault/data"
       }
 
-      # Enable GitHub auth method
+      # Enable Kubernetes auth method
       auth {
+        kubernetes {
+          kubernetes_host = "https://kubernetes.default.svc:443"
+          kubernetes_ca_cert = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+          token_reviewer_jwt = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        }
         github {
           organization = "uio-mana"
         }
