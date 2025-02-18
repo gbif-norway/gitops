@@ -411,6 +411,9 @@ server:
     annotations:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: "letsencrypt"
+      # Add these annotations to ensure proper SSL handling
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     hosts:
       - host: vault.svc.gbif.no
         paths: ["/"]
@@ -794,6 +797,7 @@ server:
         cluster_address = "[::]:8201"
         tls_cert_file = "/vault/tls/userconfig-vault-tls/tls.crt"
         tls_key_file = "/vault/tls/userconfig-vault-tls/tls.key"
+        tls_disable_client_certs = true
       }
       storage "file" {
         path = "/vault/data"
