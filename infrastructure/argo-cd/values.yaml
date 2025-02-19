@@ -2582,6 +2582,7 @@ repoServer:
         - mountPath: /custom-tools
           name: custom-tools
 
+  emptyDir: {}
   # -- Additional volumeMounts to the repo server main container
   volumeMounts:
     - name: custom-tools
