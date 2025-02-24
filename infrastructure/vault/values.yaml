@@ -803,7 +803,7 @@ server:
         path = "/vault/data"
       }
 
-      # Enable Kubernetes auth method
+      # Enable auth methods
       auth {
         kubernetes {
           kubernetes_host = "https://kubernetes.default.svc:443"
@@ -812,6 +812,12 @@ server:
         }
         github {
           organization = "uio-mana"
+          # Map GitHub teams to Vault policies
+          map_teams {
+            "developers" = "default,developers"  # Replace with your GitHub team name
+          }
+          # Or map the entire organization
+          map_organization_to_policies = "default,developers"
         }
       }
 
