@@ -105,7 +105,8 @@ extraEnv: {
   N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true",
   PGSSLMODE: "require",
   WEBHOOK_URL: "https://n8n.svc.gbif.no/",
-  N8N_LOG_LEVEL: "debug"
+  N8N_LOG_LEVEL: "debug",
+  NODE_OPTIONS: "--max-old-space-size=5000"
 }
 # Set this if running behind a reverse proxy and the external port is different from the port n8n runs on
 #   WEBHOOK_URL: "https://n8n.myhost.com/
