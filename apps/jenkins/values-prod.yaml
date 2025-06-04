@@ -515,7 +515,7 @@ controller:
     # - https://acme.org/jenkins.yaml
     # -- List of Jenkins Config as Code scripts
     configScripts:
-      security: |
+      security:
         jenkins:
           securityRealm:
             local:
