@@ -636,11 +636,14 @@ controller:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:latest
         imagePullPolicy: IfNotPresent
-        command: ["/busybox/sleep"]
-        args: ["99d"]
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do sleep 30; done"]
         volumeMounts:
           - name: kaniko-secret
             mountPath: /kaniko/.docker
+        env:
+          - name: DOCKER_CONFIG
+            value: /kaniko/.docker
         resources:
           limits:
             cpu: 1000m
@@ -648,6 +651,10 @@ controller:
           requests:
             cpu: 500m
             memory: 512Mi
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
 
   # -- Name of the Kubernetes scheduler to use
   schedulerName: ""
