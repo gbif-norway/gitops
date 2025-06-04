@@ -515,22 +515,22 @@ controller:
     # - https://acme.org/jenkins.yaml
     # -- List of Jenkins Config as Code scripts
     configScripts:
-      security: |-
+      security.yaml: |-
         apiToken:
           creationOfLegacyTokenEnabled: false
           tokenGenerationOnCreationEnabled: false
           usageStatisticsEnabled: true
-        securityRealm:
-          local:
-            allowsSignup: false
-            enableCaptcha: false
-            users:
-            - id: "${chart-admin-username}"
-              name: "Jenkins Admin"
-              password: "${chart-admin-password}"
-        authorizationStrategy:
-          loggedInUsersCanDoAnything:
-            allowAnonymousRead: false
+      securityRealm.yaml: |-
+        local:
+          allowsSignup: false
+          enableCaptcha: false
+          users:
+          - id: "${chart-admin-username}"
+            name: "Jenkins Admin"
+            password: "${chart-admin-password}"
+      authorizationStrategy.yaml: |-
+        loggedInUsersCanDoAnything:
+          allowAnonymousRead: false
 
     # -- Annotations for the JCasC ConfigMap
     configMapAnnotations: {}
