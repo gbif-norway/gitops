@@ -636,8 +636,8 @@ controller:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:latest
         imagePullPolicy: IfNotPresent
-        command: ["/bin/sh"]
-        args: ["-c", "while true; do sleep 30; done"]
+        command: ["/kaniko/executor"]
+        args: ["--no-push"]
         volumeMounts:
           - name: kaniko-secret
             mountPath: /kaniko/.docker
