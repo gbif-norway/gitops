@@ -514,8 +514,8 @@ controller:
     # -- Whether Jenkins Config as Code should overwrite any existing configuration
     overwriteConfiguration: false
     # -- Remote URLs for configuration files.
-    configUrls: []
-    # - https://acme.org/jenkins.yaml
+    configUrls:
+      - https://raw.githubusercontent.com/gbif-norway/jenkins-caac/main/pipelines/build-on-merge/job.yaml
     # -- List of Jenkins Config as Code scripts
     configScripts: {}
     #  welcome-message: |
