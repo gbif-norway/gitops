@@ -521,7 +521,7 @@ controller:
 
     # Allows adding to the top-level security JCasC section. For legacy purposes, by default, the chart includes apiToken configurations
     # -- Jenkins Config as Code security-section
-    security:
+    security: |-
       apiToken:
         creationOfLegacyTokenEnabled: false
         tokenGenerationOnCreationEnabled: false
