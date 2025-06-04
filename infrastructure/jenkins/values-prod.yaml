@@ -1273,9 +1273,11 @@ persistence:
   # -- SubPath for jenkins-home mount
   subPath:
   # -- Additional volumes
-  volumes: []
-  #  - name: nothing
-  #    emptyDir: {}
+  volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: kaniko-secret
+        defaultMode: 0600
 
   # -- Additional mounts
   mounts: []
