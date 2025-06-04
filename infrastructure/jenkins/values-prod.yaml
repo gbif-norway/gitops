@@ -632,29 +632,17 @@ controller:
         allowPrivilegeEscalation: false
 
     # -- Configures additional sidecar container(s) for the Jenkins controller
-    additionalSidecarContainers:
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/kaniko/executor"]
-        args: ["--no-push"]
-        volumeMounts:
-          - name: kaniko-secret
-            mountPath: /kaniko/.docker
-        env:
-          - name: DOCKER_CONFIG
-            value: /kaniko/.docker
-        resources:
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-          requests:
-            cpu: 500m
-            memory: 512Mi
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-          allowPrivilegeEscalation: false
+    additionalSidecarContainers: []
+    # -- Name of the Kubernetes scheduler to use
+    schedulerName: ""
+
+    # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+    # -- Node labels for pod assignment
+    nodeSelector: {}
+
+    # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+    # -- Toleration labels for pod assignment
+    tolerations: []
 
   # -- Name of the Kubernetes scheduler to use
   schedulerName: ""
@@ -666,12 +654,6 @@ controller:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   # -- Toleration labels for pod assignment
   tolerations: []
-  # -- Set TerminationGracePeriodSeconds
-  terminationGracePeriodSeconds:
-  # -- Set the termination message path
-  terminationMessagePath:
-  # -- Set the termination message policy
-  terminationMessagePolicy:
 
   # -- Affinity settings
   affinity: {}
@@ -1261,7 +1243,8 @@ persistence:
   # If undefined (the default) or set to null, no storageClassName spec is
   #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack)
   # -- Storage class for the PVC
-  storageClass:
+  storageClass: "do-block-storage"
+  accessMode: "ReadWriteOnce"
   # -- Annotations for the PVC
   annotations: {}
   # -- Labels for the PVC
@@ -1281,7 +1264,7 @@ persistence:
   subPath:
   # -- Additional volumes
   volumes:
-    - name: kaniko-secret
+    - name: docker-config
       secret:
         secretName: kaniko-secret
         defaultMode: 0600
