@@ -234,6 +234,14 @@ jenkins:
       {{- with $newRoot}}
   - kubernetes:
       containerCapStr: "{{ .Values.agent.containerCap }}"
+      {{- if .Values.agent.garbageCollection.enabled }}
+      garbageCollection:
+        {{- if .Values.agent.garbageCollection.namespaces }}
+        namespaces: |-
+          {{- .Values.agent.garbageCollection.namespaces | nindent 10 }}
+        {{- end }}
+        timeout: "{{ .Values.agent.garbageCollection.timeout }}"
+      {{- end }}
       {{- if .Values.agent.jnlpregistry }}
       jnlpregistry: "{{ .Values.agent.jnlpregistry }}"
       {{- end }}
@@ -309,6 +317,7 @@ jenkins:
   {{- /* restore root */}}
   {{- $_ := set $ "Values" $oldRoot.Values }}
   {{- end }}
+  slaveAgentPort: {{ .Values.controller.agentListenerPort }}
   {{- if .Values.controller.csrf.defaultCrumbIssuer.enabled }}
   crumbIssuer:
     standard:
@@ -462,7 +471,7 @@ Returns kubernetes pod template configuration as code
   {{- end }}
 {{- end }}
   idleMinutes: {{ .Values.agent.idleMinutes }}
-  instanceCap: 2147483647
+  instanceCap: {{ int .Values.agent.instanceCap }}
   {{- if .Values.agent.hostNetworking }}
   hostNetwork: {{ .Values.agent.hostNetworking }}
   {{- end }}
