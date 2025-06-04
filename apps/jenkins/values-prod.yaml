@@ -688,7 +688,7 @@ controller:
 
   ingress:
     # -- Enables ingress
-    enabled: false
+    enabled: true
 
     # Override for the default paths that map requests to the backend
     # -- Override for the default Ingress paths
@@ -705,31 +705,32 @@ controller:
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
     # For Kubernetes v1.19+, use 'networking.k8s.io/v1'
     # -- Ingress API version
-    apiVersion: "extensions/v1beta1"
+    apiVersion: "networking.k8s.io/v1"
     # -- Ingress labels
     labels: {}
     # -- Ingress annotations
-    annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt
+      kubernetes.io/tls-acme: "true"
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    # ingressClassName: nginx
+    ingressClassName: nginx
 
     # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
     # -- Ingress path
-    path:
+    path: /
 
     # configures the hostname e.g. jenkins.example.com
     # -- Ingress hostname
-    hostName:
+    hostName: jenkins.svc.gbif.no
     # -- Hostname to serve assets from
-    resourceRootUrl:
+    resourceRootUrl: https://jenkins.svc.gbif.no
     # -- Ingress TLS configuration
-    tls: []
-    # - secretName: jenkins.cluster.local
-    #   hosts:
-    #     - jenkins.cluster.local
+    tls:
+      - secretName: jenkins-tls
+        hosts:
+          - jenkins.svc.gbif.no
 
   # often you want to have your controller all locked down and private,
   # but you still want to get webhooks from your SCM
@@ -1211,154 +1212,4 @@ additionalAgents: {}
 # They inherit all values from the default cloud (including the main agent), so
 # you only need to specify values which differ. If you want to override
 # default additionalAgents with the additionalClouds.additionalAgents set
-# additionalAgentsOverride to `true`.
-additionalClouds: {}
-#  remote-cloud-1:
-#    kubernetesURL: https://api.remote-cloud.com
-#    additionalAgentsOverride: true
-#    additionalAgents:
-#      maven-2:
-#        podName: maven-2
-#        customJenkinsLabels: maven
-#        # An example of overriding the jnlp container
-#        # sideContainerName: jnlp
-#        image:
-#          repository: jenkins/jnlp-agent-maven
-#          tag: latest
-#        namespace: my-other-maven-namespace
-#  remote-cloud-2:
-#    kubernetesURL: https://api.remote-cloud.com
-
-persistence:
-  # -- Enable the use of a Jenkins PVC
-  enabled: true
-
-  # A manually managed Persistent Volume and Claim
-  # Requires persistence.enabled: true
-  # If defined, PVC must be created manually before volume will be bound
-  # -- Provide the name of a PVC
-  existingClaim:
-
-  # jenkins data Persistent Volume Storage Class
-  # If defined, storageClassName: <storageClass>
-  # If set to "-", storageClassName: "", which disables dynamic provisioning
-  # If undefined (the default) or set to null, no storageClassName spec is
-  #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack)
-  # -- Storage class for the PVC
-  storageClass:
-  # -- Annotations for the PVC
-  annotations: {}
-  # -- Labels for the PVC
-  labels: {}
-  # -- The PVC access mode
-  accessMode: "ReadWriteOnce"
-  # -- The size of the PVC
-  size: "8Gi"
-
-  # ref: https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/
-  # -- Existing data source to clone PVC from
-  dataSource: {}
-  #   name: PVC-NAME
-  #   kind: PersistentVolumeClaim
-
-  # -- SubPath for jenkins-home mount
-  subPath:
-  # -- Additional volumes
-  volumes: []
-  #  - name: nothing
-  #    emptyDir: {}
-
-  # -- Additional mounts
-  mounts: []
-  #  - mountPath: /var/nothing
-  #    name: nothing
-  #    readOnly: true
-
-networkPolicy:
-  # -- Enable the creation of NetworkPolicy resources
-  enabled: false
-
-  # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
-  # For Kubernetes v1.7, use 'networking.k8s.io/v1'
-  # -- NetworkPolicy ApiVersion
-  apiVersion: networking.k8s.io/v1
-  # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
-  internalAgents:
-    # -- Allow internal agents (from the same cluster) to connect to controller. Agent pods will be filtered based on PodLabels
-    allowed: true
-    # -- A map of labels (keys/values) that agent pods must have to be able to connect to controller
-    podLabels: {}
-    # -- A map of labels (keys/values) that agents namespaces must have to be able to connect to controller
-    namespaceLabels: {}
-      # project: myproject
-  externalAgents:
-    # -- The IP range from which external agents are allowed to connect to controller, i.e., 172.17.0.0/16
-    ipCIDR:
-    # -- A list of IP sub-ranges to be excluded from the allowlisted IP range
-    except: []
-      # - 172.17.1.0/24
-
-## Install Default RBAC roles and bindings
-rbac:
-  # -- Whether RBAC resources are created
-  create: true
-  # -- Whether the Jenkins service account should be able to read Kubernetes secrets
-  readSecrets: false
-  # -- Whether the Jenkins service account should be able to use the OpenShift "nonroot" Security Context Constraints
-  useOpenShiftNonRootSCC: false
-
-serviceAccount:
-  # -- Configures if a ServiceAccount with this name should be created
-  create: true
-
-  # The name of the ServiceAccount is autogenerated by default
-  #  -- The name of the ServiceAccount to be used by access-controlled resources
-  name:
-  # -- Configures annotations for the ServiceAccount
-  annotations: {}
-  # -- Configures extra labels for the ServiceAccount
-  extraLabels: {}
-  # -- Controller ServiceAccount image pull secret
-  imagePullSecretName:
-  # -- Auto-mount ServiceAccount token
-  automountServiceAccountToken: true
-
-
-serviceAccountAgent:
-  # -- Configures if an agent ServiceAccount should be created
-  create: false
-
-  # If not set and create is true, a name is generated using the fullname template
-  # -- The name of the agent ServiceAccount to be used by access-controlled resources
-  name:
-  # -- Configures annotations for the agent ServiceAccount
-  annotations: {}
-  # -- Configures extra labels for the agent ServiceAccount
-  extraLabels: {}
-  # -- Agent ServiceAccount image pull secret
-  imagePullSecretName:
-  # -- Auto-mount ServiceAccount token
-  automountServiceAccountToken: true
-
-# -- Checks if any deprecated values are used
-checkDeprecation: true
-
-awsSecurityGroupPolicies:
-  enabled: false
-  policies:
-    - name: ""
-      securityGroupIds: []
-      podSelector: {}
-
-# Here you can configure unit tests values when executing the helm unittest in the CONTRIBUTING.md
-helmtest:
-  # A testing framework for bash
-  bats:
-    # Bash Automated Testing System (BATS)
-    image:
-      # -- Registry of the image used to test the framework
-      registry: "docker.io"
-      # -- Repository of the image used to test the framework
-      repository: "bats/bats"
-      # -- Tag of the image to test the framework
-      tag: "1.11.1"
+# additionalAgentsOverride to `
