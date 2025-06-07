@@ -13,7 +13,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/publishgpt-back-end
-    tag: aa1ff31
+    tag: d4151ac
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -66,7 +66,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/publishgpt-front-end
-    tag: aa1ff31
+    tag: d4151ac
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
