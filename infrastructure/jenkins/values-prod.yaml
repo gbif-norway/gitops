@@ -75,8 +75,8 @@ controller:
   admin:
     # Admin username created as a secret if `controller.admin.createSecret` is true
     username: "admin"
-    # Disable automatic secret creation
-    createSecret: false
+    # Enable secret creation to trigger mounting, but use existing secret
+    createSecret: true
     # Specify your existing secret name
     existingSecret: "jenkins-admin-credentials"
 
