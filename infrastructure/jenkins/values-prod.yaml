@@ -39,7 +39,7 @@ controller:
     repository: "jenkins/jenkins"
 
     # -- Controller image tag override; i.e., tag: "2.440.1-jdk21"
-    tag:
+    tag: "2.517-jdk21"
 
     # -- Controller image tag label
     tagLabel: jdk21
@@ -503,7 +503,7 @@ controller:
     overwriteConfiguration: false
     # -- Remote URLs for configuration files.
     configUrls:
-      # - https://raw.githubusercontent.com/gbif-norway/jenkins-caac/main/pipelines/build-on-merge/job.yaml
+      - https://raw.githubusercontent.com/gbif-norway/jenkins-caac/main/pipelines/build-on-merge/job.yaml
     # -- List of Jenkins Config as Code scripts
     configScripts: {}
     #  welcome-message: |
