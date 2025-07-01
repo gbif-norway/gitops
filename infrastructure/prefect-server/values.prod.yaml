@@ -450,10 +450,10 @@ ingress:
 # Secret configuration
 secret:
   # -- whether to create a Secret containing the PostgreSQL connection string
-  create: true
+  create: false
   # -- name for the Secret containing the PostgreSQL connection string
   # To provide an existing Secret, provide a name and set `create=false`
-  name: ""
+  name: "prefect-postgresql-connection"
   # -- username for the PostgreSQL connection string
   username: ""
   # -- password for the PostgreSQL connection string
@@ -482,7 +482,7 @@ sqlite:
 # PostgreSQL subchart - default overrides
 postgresql:
   # -- enable use of bitnami/postgresql subchart
-  enabled: true
+  enabled: false
   auth:
     # -- determines whether an admin user is created within postgres
     enablePostgresUser: false
