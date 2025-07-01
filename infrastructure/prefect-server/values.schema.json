@@ -1,0 +1,1092 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "title": "Name Override",
+      "description": "partially overrides common.names.name"
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "title": "Fullname Override",
+      "description": "fully override common.names.fullname"
+    },
+    "namespaceOverride": {
+      "type": "string",
+      "title": "Namespace Override",
+      "description": "fully override common.names.namespace"
+    },
+    "commonLabels": {
+      "type": "object",
+      "title": "Common Labels",
+      "description": "labels to add to all deployed objects"
+    },
+    "commonAnnotations": {
+      "type": "object",
+      "title": "Common Annotations",
+      "description": "annotations to add to all deployed objects"
+    },
+    "common": {
+      "type": "object",
+      "title": "Common",
+      "description": "common configuration.  Not set by user but required as common vars are passed to all manifests."
+    },
+    "global": {
+      "type": "object",
+      "title": "Global",
+      "description": "global configuration",
+      "properties": {
+        "prefect": {
+          "type": "object",
+          "title": "Prefect",
+          "description": "global prefect configuration",
+          "additionalProperties": true,
+          "properties": {
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "description": "prefect image repository"
+                },
+                "prefectTag": {
+                  "type": "string",
+                  "description": "prefect image tag (immutable tags are recommended)"
+                },
+                "pullPolicy": {
+                  "type": "string",
+                  "description": "prefect image pull policy"
+                },
+                "pullSecrets": {
+                  "type": "array",
+                  "description": "prefect image pull secrets",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "env": {
+              "type": "array",
+              "description": "array with environment variables to add to all deployments",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "server": {
+      "type": "object",
+      "title": "Server",
+      "description": "server configuration",
+      "additionalProperties": false,
+      "properties": {
+        "basicAuth": {
+          "type": "object",
+          "title": "Basic Auth",
+          "description": "basic auth configuration",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "enable basic auth for the server, for an administrator/password combination"
+            },
+            "authString": {
+              "type": "string",
+              "title": "Auth String",
+              "description": "basic auth credentials in the format admin:<your-password> (no brackets)"
+            },
+            "existingSecret": {
+              "type": "string",
+              "title": "Existing Secret",
+              "description": "name of existing secret containing basic auth credentials. takes precedence over authString. must contain a key `auth-string` with the value of the auth string"
+            }
+          }
+        },
+        "image": {
+          "type": "object",
+          "title": "Image",
+          "description": "server image configuration",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "title": "Repository",
+              "description": "server image repository"
+            },
+            "prefectTag": {
+              "type": "string",
+              "title": "Tag",
+              "description": "server image tag"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "title": "Pull Policy",
+              "description": "server image pull policy"
+            },
+            "pullSecrets": {
+              "type": "array",
+              "title": "Pull Secrets",
+              "description": "server image pull secrets",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "priorityClassName": {
+          "type": "string",
+          "title": "Priority Class Name",
+          "description": "priority class name to use for the server pods; if the priority class is empty or doesn't exist, the server pods are scheduled without a priority class"
+        },
+        "apiBasePath": {
+          "type": "string",
+          "title": "API Base Path",
+          "description": "sets PREFECT_SERVER_API_BASE_PATH",
+          "default": "/api"
+        },
+        "debug": {
+          "type": "boolean",
+          "title": "Debug",
+          "description": "server debug mode"
+        },
+        "loggingLevel": {
+          "type": "string",
+          "title": "Logging Level",
+          "description": "sets PREFECT_LOGGING_SERVER_LEVEL",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        },
+        "uiConfig": {
+          "type": "object",
+          "title": "UI Config",
+          "description": "Prefect UI Config",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable Prefect UI",
+              "description": "set PREFECT_UI_ENABLED; enable the UI on the server"
+            },
+            "prefectUiApiUrl": {
+              "type": "string",
+              "title": "Prefect API URL",
+              "description": "sets PREFECT_UI_API_URL"
+            }
+          }
+        },
+        "env": {
+          "type": "array",
+          "title": "Environment Variables",
+          "description": "array with environment variables to add to server nodes",
+          "items": {
+            "type": "object"
+          }
+        },
+        "args": {
+          "type": "array",
+          "title": "Custom container command arguments",
+          "description": "array with arguments",
+          "items": {
+            "type": "string"
+          }
+        },
+        "command": {
+          "type": "array",
+          "title": "Custom container entrypoint",
+          "description": "array with container entrypoint",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updateStrategy": {
+          "type": "object",
+          "title": "Update strategy",
+          "description": "The type of update strategy to use to replace existing pods with new ones",
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Deployment type",
+              "description": "Type of deployment. Can be \"Recreate\" or \"RollingUpdate\"."
+            },
+            "rollingUpdate" : {
+              "type": "object",
+              "title": "Rolling update settings",
+              "description": "Rolling update config params. Should only be specified if updateStrategy is set to \"RollingUpdate\".",
+              "properties": {
+                "maxSurge": {
+                  "type": "string",
+                  "title": "Max pod surge",
+                  "description": ""
+                },
+                "maxSurge": {
+                  "type": "string",
+                  "title": "Max unavailable pods",
+                  "description": ""
+                }
+              }
+            }
+          }
+        },
+        "revisionHistoryLimit": {
+          "type": "integer",
+          "title": "Revision History Limit",
+          "description": "the number of old ReplicaSets to retain to allow rollback"
+        },
+        "autoscaling": {
+          "type": "object",
+          "title": "Autoscaling",
+          "description": "server autoscaling configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "enable server autoscaling"
+            },
+            "minReplicas": {
+              "type": "integer",
+              "title": "Min Replicas",
+              "description": "minimum number of server replicas"
+            },
+            "maxReplicas": {
+              "type": "integer",
+              "title": "Max Replicas",
+              "description": "maximum number of server replicas"
+            },
+            "targetCPU": {
+              "type": "integer",
+              "title": "Target CPU Utilization Percentage",
+              "description": "target CPU utilization percentage"
+            },
+            "targetMemory": {
+              "type": "integer",
+              "title": "Target Memory Utilization Percentage",
+              "description": "target Memory utilization percentage"
+            }
+          }
+        },
+        "replicaCount": {
+          "type": "integer",
+          "title": "Replica Count",
+          "description": "number of server replicas to deploy"
+        },
+        "resources": {
+          "type": "object",
+          "title": "Resources",
+          "description": "server resource requests and limits",
+          "additionalProperties": false,
+          "properties": {
+            "requests": {
+              "type": "object",
+              "title": "Requests",
+              "description": "server resource requests",
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "title": "CPU",
+                  "description": "server CPU request"
+                },
+                "memory": {
+                  "type": "string",
+                  "title": "Memory",
+                  "description": "server memory request"
+                },
+                "ephemeral-storage": {
+                  "type": "string",
+                  "title": "Ephemeral Storage",
+                  "description": "server ephemeral storage request"
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "title": "Limits",
+              "description": "server resource limits",
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "title": "CPU",
+                  "description": "server CPU limit"
+                },
+                "memory": {
+                  "type": "string",
+                  "title": "Memory",
+                  "description": "server memory limit"
+                },
+                "ephemeral-storage": {
+                  "type": "string",
+                  "title": "Ephemeral Storage",
+                  "description": "server ephemeral storage limit"
+                }
+              }
+            }
+          }
+        },
+        "livenessProbe": {
+          "type": "object",
+          "title": "Liveness Probe",
+          "description": "server liveness probe configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "enable server liveness probe"
+            },
+            "config": {
+              "type": "object",
+              "title": "Liveness Probe",
+              "description": "server liveness probe configuration",
+              "additionalProperties": false,
+              "properties": {
+                "initialDelaySeconds": {
+                  "type": "integer",
+                  "title": "Initial Delay Seconds",
+                  "description": "The number of seconds to wait before starting the first probe."
+                },
+                "periodSeconds": {
+                  "type": "integer",
+                  "title": "Period Seconds",
+                  "description": "The number of seconds to wait between consecutive probes."
+                },
+                "timeoutSeconds": {
+                  "type": "integer",
+                  "title": "Timeout Seconds",
+                  "description": "The number of seconds to wait for a probe response before considering it as failed."
+                },
+                "successThreshold": {
+                  "type": "integer",
+                  "title": "Success Threshold",
+                  "description": "The number of consecutive failures allowed before considering the probe as failed."
+                },
+                "failureThreshold": {
+                  "type": "integer",
+                  "title": "Failure Threshold",
+                  "description": "The minimum consecutive successes required to consider the probe successful."
+                }
+              }
+            }
+          }
+        },
+        "readinessProbe": {
+          "type": "object",
+          "title": "Readiness Probe",
+          "description": "server readiness probe configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "enable server readiness probe"
+            },
+            "config": {
+              "type": "object",
+              "title": "Readiness Probe",
+              "description": "server readiness probe configuration",
+              "additionalProperties": false,
+              "properties": {
+                "initialDelaySeconds": {
+                  "type": "integer",
+                  "title": "Initial Delay Seconds",
+                  "description": "The number of seconds to wait before starting the first probe."
+                },
+                "periodSeconds": {
+                  "type": "integer",
+                  "title": "Period Seconds",
+                  "description": "The number of seconds to wait between consecutive probes."
+                },
+                "timeoutSeconds": {
+                  "type": "integer",
+                  "title": "Timeout Seconds",
+                  "description": "The number of seconds to wait for a probe response before considering it as failed."
+                },
+                "successThreshold": {
+                  "type": "integer",
+                  "title": "Success Threshold",
+                  "description": "The number of consecutive failures allowed before considering the probe as failed."
+                },
+                "failureThreshold": {
+                  "type": "integer",
+                  "title": "Failure Threshold",
+                  "description": "The minimum consecutive successes required to consider the probe successful."
+                }
+              }
+            }
+          }
+        },
+        "podSecurityContext": {
+          "type": "object",
+          "title": "Pod Security Context",
+          "description": "server pod security context",
+          "additionalProperties": false,
+          "properties": {
+            "runAsUser": {
+              "type": "integer",
+              "title": "Run As User",
+              "description": "set server pod's security context runAsUser"
+            },
+            "runAsNonRoot": {
+              "type": "boolean",
+              "title": "Run As Non Root",
+              "description": "set server pods security context runAsNonRoot"
+            },
+            "fsGroup": {
+              "type": "integer",
+              "title": "FS Group",
+              "description": "set server pod's security context fsGroup"
+            },
+            "seccompProfile": {
+              "type": "object",
+              "title": "Seccomp Profile",
+              "description": "Seccomp profile settings for the pod",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["RuntimeDefault", "Unconfined", "Localhost"]
+                },
+                "localhostProfile": {
+                  "type": "string",
+                  "description": "Path to the seccomp profile on the node. Required when type is 'Localhost'",
+                  "pattern": "^/.*$"
+                }
+              },
+              "required": ["type"],
+              "dependencies": {
+                "type": {
+                  "oneOf": [
+                    {
+                      "properties": {
+                        "type": {
+                          "enum": ["RuntimeDefault", "Unconfined"]
+                        }
+                      },
+                      "required": ["type"]
+                    },
+                    {
+                      "properties": {
+                        "type": {
+                          "enum": ["Localhost"]
+                        },
+                        "localhostProfile": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["type", "localhostProfile"]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "title": "Container Security Context",
+          "description": "server container security context",
+          "additionalProperties": false,
+          "properties": {
+            "runAsUser": {
+              "type": "integer",
+              "title": "Run As User",
+              "description": "set server container's security context runAsUser"
+            },
+            "runAsNonRoot": {
+              "type": "boolean",
+              "title": "Run As Non Root",
+              "description": "set server container's security context runAsNonRoot"
+            },
+            "readOnlyRootFilesystem": {
+              "type": "boolean",
+              "title": "Read Only Root Filesystem",
+              "description": "set server container's security context readOnlyRootFilesystem"
+            },
+            "allowPrivilegeEscalation": {
+              "type": "boolean",
+              "title": "Allow Privilege Escalation",
+              "description": "set server container's security context allowPrivilegeEscalation"
+            },
+            "capabilities": {
+              "type": "object",
+              "title": "Configure Linux capabilities",
+              "description": "set server container's security context capabilities",
+              "properties": {
+                "add": {
+                  "type": "array",
+                  "title": "Added capabilities",
+                  "description": "set server container's security context capabilities to add",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "drop": {
+                  "type": "array",
+                  "title": "Removed capabilities",
+                  "description": "set server container's security context capabilities to remove",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "podLabels": {
+          "type": "object",
+          "title": "Pod Labels",
+          "description": "extra labels for server pod"
+        },
+        "podAnnotations": {
+          "type": "object",
+          "title": "Pod Annotations",
+          "description": "extra annotations for server pod"
+        },
+        "affinity": {
+          "type": "object",
+          "title": "Affinity",
+          "description": "affinity for server pods assignment"
+        },
+        "nodeSelector": {
+          "type": "object",
+          "title": "Node Selector",
+          "description": "node labels for server pods assignment"
+        },
+        "tolerations": {
+          "type": "array",
+          "title": "Tolerations",
+          "description": "tolerations for server pods assignment",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraEnvVarsCM": {
+          "type": "string",
+          "title": "Extra Env Vars ConfigMap",
+          "description": "name of existing ConfigMap containing extra env vars to add to server nodes"
+        },
+        "extraEnvVarsSecret": {
+          "type": "string",
+          "title": "Extra Env Vars Secret",
+          "description": "name of existing Secret containing extra env vars to add to server nodes"
+        },
+        "extraContainers": {
+          "type": "array",
+          "title": "Extra Containers",
+          "description": "additional sidecar containers",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraVolumes": {
+          "type": "array",
+          "title": "Extra Volumes",
+          "description": "array with extra volumes for the server pod",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraVolumeMounts": {
+          "type": "array",
+          "title": "Extra Volume Mounts",
+          "description": "array with extra volumeMounts for the server pod",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraArgs": {
+          "type": "array",
+          "title": "Extra Container Args",
+          "description": "array with extra args for the server container"
+        },
+        "backgroundServices": {
+          "type": "object",
+          "title": "Background Services",
+          "description": "configuration for running background services separately",
+          "properties": {
+            "runAsSeparateDeployment": {
+              "type": "boolean",
+              "title": "Run Separately",
+              "description": "run background services in a separate deployment"
+            },
+            "replicaCount": {
+              "type": "integer",
+              "title": "Replica Count",
+              "description": "number of background services replicas to deploy"
+            },
+            "resources": {
+              "type": "object",
+              "title": "Resources",
+              "description": "resources for the background services container",
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "properties": {
+                    "cpu": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "cpu": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "backgroundServices": {
+      "type": "object",
+      "title": "Background Services",
+      "description": "Background Services Deployment Configuration",
+      "additionalProperties": false,
+      "properties": {
+        "runAsSeparateDeployment": {
+          "type": "boolean",
+          "description": "Run background services (like scheduling) in a separate deployment"
+        },
+        "priorityClassName": {
+          "type": "string",
+          "description": "priority class name to use for the background-services pods"
+        },
+        "debug": {
+          "type": "boolean",
+          "description": "enable background-services debug mode"
+        },
+        "loggingLevel": {
+          "type": "string",
+          "description": "sets PREFECT_LOGGING_SERVER_LEVEL",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        },
+        "env": {
+          "type": "array",
+          "description": "array with environment variables to add to background-services container",
+          "items": {
+            "type": "object"
+          }
+        },
+        "args": {
+          "type": "array",
+          "title": "Custom container command arguments",
+          "description": "array with arguments",
+          "items": {
+            "type": "string"
+          }
+        },
+        "command": {
+          "type": "array",
+          "title": "Custom container entrypoint",
+          "description": "array with container entrypoint",
+          "items": {
+            "type": "string"
+          }
+        },
+        "revisionHistoryLimit": {
+          "type": "integer",
+          "description": "the number of old ReplicaSets to retain to allow rollback"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "description": "the requested resources for the background-services container"
+            },
+            "limits": {
+              "type": "object",
+              "description": "the requested limits for the background-services container"
+            }
+          }
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "initialDelaySeconds": { "type": "integer" },
+                "periodSeconds": { "type": "integer" },
+                "timeoutSeconds": { "type": "integer" },
+                "failureThreshold": { "type": "integer" },
+                "successThreshold": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "initialDelaySeconds": { "type": "integer" },
+                "periodSeconds": { "type": "integer" },
+                "timeoutSeconds": { "type": "integer" },
+                "failureThreshold": { "type": "integer" },
+                "successThreshold": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "podSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsUser": { "type": "integer" },
+            "runAsNonRoot": { "type": "boolean" },
+            "fsGroup": { "type": "integer" }
+          }
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsUser": { "type": "integer" },
+            "runAsNonRoot": { "type": "boolean" },
+            "readOnlyRootFilesystem": { "type": "boolean" },
+            "allowPrivilegeEscalation": { "type": "boolean" },
+            "capabilities": { "type": "object" }
+          }
+        },
+        "podLabels": { "type": "object" },
+        "podAnnotations": { "type": "object" },
+        "affinity": { "type": "object" },
+        "nodeSelector": { "type": "object" },
+        "tolerations": { "type": "array" },
+        "extraEnvVarsCM": { "type": "string" },
+        "extraEnvVarsSecret": { "type": "string" },
+        "extraContainers": { "type": "array" },
+        "extraVolumes": { "type": "array" },
+        "extraVolumeMounts": { "type": "array" },
+        "serviceAccount": {
+          "type": "object",
+          "title": "Service Account",
+          "description": "background services service account configuration",
+          "additionalProperties": false,
+          "properties": {
+            "create": {
+              "type": "boolean",
+              "title": "Create",
+              "description": "create background services service account"
+            },
+            "name": {
+              "type": "string",
+              "title": "Name",
+              "description": "the name of the ServiceAccount to use. if not set and create is true, a name is generated using the common.names.fullname template"
+            },
+            "annotations": {
+              "type": "object",
+              "title": "Annotations",
+              "description": "annotations to add to the background services service account"
+            }
+          }
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Ingress",
+      "description": "server ingress configuration",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "enable ingress record generation for server"
+        },
+        "servicePort": {
+          "type": ["integer", "string"],
+          "title": "Service Port Name",
+          "description": "service port name or number"
+        },
+        "className": {
+          "type": "string",
+          "title": "Class Name",
+          "description": "IngressClass that will be used to implement the Ingress (Kubernetes 1.18+)"
+        },
+        "host": {
+          "type": "object",
+          "title": "Host",
+          "description": "server ingress host configuration",
+          "additionalProperties": false,
+          "properties": {
+            "hostname": {
+              "type": "string",
+              "title": "Hostname",
+              "description": "default host for the ingress record"
+            },
+            "path": {
+              "type": "string",
+              "title": "Path",
+              "description": "default path for the ingress record"
+            },
+            "pathType": {
+              "type": "string",
+              "title": "Path Type",
+              "description": "ingress path type"
+            }
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "title": "Annotations",
+          "description": "additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations."
+        },
+        "tls": {
+          "type": "boolean",
+          "title": "TLS",
+          "description": "enable TLS configuration for the host defined at `ingress.host.hostname` parameter"
+        },
+        "selfSigned": {
+          "type": "boolean",
+          "title": "Self Signed",
+          "description": "create a TLS secret for this ingress record using self-signed certificates generated by Helm"
+        },
+        "extraHosts": {
+          "type": "array",
+          "title": "Extra Hosts",
+          "description": "an array with additional hostname(s) to be covered with the ingress record",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraPaths": {
+          "type": "array",
+          "title": "Extra Paths",
+          "description": "an array with additional arbitrary paths that may need to be added to the ingress under the main host",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraTls": {
+          "type": "array",
+          "title": "Extra TLS",
+          "description": "an array with additional tls configuration to be added to the ingress record",
+          "items": {
+            "type": "object"
+          }
+        },
+        "extraRules": {
+          "type": "array",
+          "title": "Extra Rules",
+          "description": "additional rules to be covered with this ingress record",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "sqlite": {
+      "type": "object",
+      "title": "SQLite",
+      "description": "sqlite configuration",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "description": "enable sqlite database"
+        },
+        "persistence": {
+          "type": "object",
+          "title": "Persistence",
+          "description": "persistence settings for sqlite",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enabled",
+              "description": "enable sqlite database persistence"
+            },
+            "size": {
+              "type": "string",
+              "title": "Size",
+              "description": "size of the persistent volume claim"
+            },
+            "storageClassName": {
+              "type": "string",
+              "title": "Storage class name",
+              "description": "storage class name for the persistent volume claim"
+            }
+          }
+        }
+      }
+    },
+    "serviceAccount": {
+      "type": "object",
+      "title": "Service Account",
+      "description": "server service account configuration",
+      "additionalProperties": false,
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "title": "Create",
+          "description": "create server service account"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "description": "the name of the ServiceAccount to use. if not set and create is true, a name is generated using the common.names.fullname template"
+        },
+        "annotations": {
+          "type": "object",
+          "title": "Annotations",
+          "description": "annotations to add to the server service account"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "title": "Service",
+      "description": "server service configuration",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "description": "service type"
+        },
+        "port": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "title": "Port",
+          "description": "service port"
+        },
+        "extraPorts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "port": {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              },
+              "targetPort": {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "port",
+              "targetPort"
+            ]
+          }
+        },
+        "clusterIP": {
+          "type": "string",
+          "title": "Cluster IP",
+          "description": "service Cluster IP"
+        },
+        "nodePort": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "title": "Node Port",
+          "description": "service port if defining service as type nodeport"
+        },
+        "targetPort": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "title": "Target Port",
+          "description": "target port on the server pod"
+        },
+        "externalTrafficPolicy": {
+          "type": "string",
+          "title": "External Traffic Policy",
+          "description": "service external traffic policy"
+        },
+        "annotations": {
+          "type": "object",
+          "title": "Annotations",
+          "description": "annotations to add to the server service"
+        }
+      }
+    },
+    "secret": {
+      "type": "object",
+      "properties": {
+        "create": { "type": "boolean" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "host": { "type": "string" },
+        "port": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "database": { "type": "string" }
+      }
+    },
+    "postgresql": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "enablePostgresUser": { "type": "boolean" },
+            "database": { "type": "string" },
+            "username": { "type": "string" },
+            "password": { "type": "string" }
+          }
+        },
+        "primary": {
+          "type": "object",
+          "properties": {
+            "initdb": {
+              "type": "object",
+              "properties": {
+                "user": { "type": "string" }
+              }
+            },
+            "persistence": {
+              "type": "object",
+              "properties": {
+                "enabled": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "tag": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
