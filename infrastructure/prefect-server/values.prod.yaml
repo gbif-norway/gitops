@@ -387,7 +387,7 @@ ingress:
   className: "nginx"
   host:
     # -- default host for the ingress record
-    hostname: prefect.local
+    hostname: prefect.svc.gbif.no
     # -- default path for the ingress record
     path: /
     # -- ingress path type
