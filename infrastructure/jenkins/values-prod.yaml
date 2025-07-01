@@ -73,25 +73,11 @@ controller:
   # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert controller.admin.username to your preferred admin user:
   admin:
+    # Disable automatic secret creation
+    createSecret: false
+    # Specify your existing secret name
+    existingSecret: "jenkins-admin-credentials"
 
-    # -- Admin username created as a secret if `controller.admin.createSecret` is true
-    username: "admin"
-    # -- Admin password created as a secret if `controller.admin.createSecret` is true
-    # @default -- <random password>
-    password:
-
-    # -- The key in the existing admin secret containing the username
-    userKey: jenkins-admin-user
-    # -- The key in the existing admin secret containing the password
-    passwordKey: jenkins-admin-password
-
-    # The default configuration uses this secret to configure an admin user
-    # If you don't need that user or use a different security realm, then you can disable it
-    # -- Create secret for admin user
-    createSecret: true
-
-    # -- The name of an existing secret containing the admin credentials
-    existingSecret: ""
   # -- Email address for the administrator of the Jenkins instance
   jenkinsAdminEmail:
 
