@@ -73,6 +73,8 @@ controller:
   # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert controller.admin.username to your preferred admin user:
   admin:
+    # Admin username created as a secret if `controller.admin.createSecret` is true
+    username: "admin"
     # Disable automatic secret creation
     createSecret: false
     # Specify your existing secret name
