@@ -75,23 +75,42 @@ server:
   # -- array with environment variables to add to server deployment
   env:
     # GitHub OAuth Configuration
-    - name: PREFECT_SERVER_AUTH_PROVIDER
+    - name: PREFECT_UI_AUTH_PROVIDER
       value: "oauth"
-    - name: PREFECT_SERVER_AUTH_OAUTH_PROVIDER
+    - name: PREFECT_UI_OAUTH_PROVIDER
       value: "github"
-    - name: PREFECT_SERVER_AUTH_OAUTH_CLIENT_ID
+    - name: PREFECT_UI_OAUTH_CLIENT_ID
       valueFrom:
         secretKeyRef:
           name: prefect-github-oauth
           key: client-id
-    - name: PREFECT_SERVER_AUTH_OAUTH_CLIENT_SECRET
+    - name: PREFECT_UI_OAUTH_CLIENT_SECRET
       valueFrom:
         secretKeyRef:
           name: prefect-github-oauth
           key: client-secret
-    - name: PREFECT_SERVER_AUTH_OAUTH_SCOPES
+    - name: PREFECT_UI_OAUTH_SCOPES
       value: "read:user,read:org"
-    - name: PREFECT_SERVER_AUTH_OAUTH_ALLOWED_ORGANIZATIONS
+    - name: PREFECT_UI_OAUTH_ALLOWED_ORGANIZATIONS
+      value: "gbif-norway"
+    # Server OAuth Configuration
+    - name: PREFECT_SERVER_AUTH_PROVIDER
+      value: "oauth"
+    - name: PREFECT_SERVER_OAUTH_PROVIDER
+      value: "github"
+    - name: PREFECT_SERVER_OAUTH_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: prefect-github-oauth
+          key: client-id
+    - name: PREFECT_SERVER_OAUTH_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: prefect-github-oauth
+          key: client-secret
+    - name: PREFECT_SERVER_OAUTH_SCOPES
+      value: "read:user,read:org"
+    - name: PREFECT_SERVER_OAUTH_ALLOWED_ORGANIZATIONS
       value: "gbif-norway"
   ## env:
   ##   - name: PREFECT_API_ENABLE_HTTP2
