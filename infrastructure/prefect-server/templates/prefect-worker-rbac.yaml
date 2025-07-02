@@ -1,6 +1,7 @@
 # Prefect Worker RBAC Configuration
 # This file provides the necessary RBAC permissions for Prefect worker jobs
 # to run without system:anonymous authentication errors.
+# Based on best practices from Kopf documentation: https://kopf.readthedocs.io/en/stable/deployment/#rbac
 
 ---
 # ServiceAccount for Prefect Worker Jobs
@@ -16,110 +17,124 @@ metadata:
     description: "ServiceAccount for Prefect worker jobs"
 
 ---
-# ClusterRole with necessary permissions for Prefect workers
-# Use ClusterRole if workers need to access resources across namespaces
+# ClusterRole for cluster-wide permissions (following Kopf pattern)
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: prefect-worker-role
+  name: prefect-worker-role-cluster
   labels:
     app.kubernetes.io/name: prefect-worker
     app.kubernetes.io/component: worker
 rules:
-# Core Kubernetes resources
-- apiGroups: [""]
-  resources: ["pods", "services", "configmaps", "secrets", "events", "namespaces"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# Apps resources
-- apiGroups: ["apps"]
-  resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# Batch resources
-- apiGroups: ["batch"]
-  resources: ["jobs", "cronjobs"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# Networking resources
-- apiGroups: ["networking.k8s.io"]
-  resources: ["networkpolicies", "ingresses"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# Storage resources
-- apiGroups: [""]
-  resources: ["persistentvolumeclaims", "persistentvolumes"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# RBAC resources (for self-management)
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
-  verbs: ["get", "list", "watch"]
-# API discovery
-- apiGroups: [""]
-  resources: ["api", "apis"]
-  verbs: ["get", "list"]
+  # Framework: API discovery and namespace watching
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["list", "watch"]
+  
+  # Framework: Custom Resource Definitions watching
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["list", "watch"]
+  
+  # Framework: API discovery
+  - apiGroups: [""]
+    resources: ["api", "apis"]
+    verbs: ["get", "list"]
+  
+  # Application: Cross-namespace resource access (if needed)
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  
+  # Application: Cross-namespace batch resources
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch"]
+  
+  # Application: Cross-namespace apps resources
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
+    verbs: ["get", "list", "watch"]
 
 ---
-# ClusterRoleBinding to bind the role to the service account
+# Role for namespace-scoped permissions (following Kopf pattern)
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: Role
 metadata:
-  name: prefect-worker-binding
+  namespace: prefect  # Replace with your actual namespace
+  name: prefect-worker-role-namespaced
   labels:
     app.kubernetes.io/name: prefect-worker
     app.kubernetes.io/component: worker
-subjects:
-- kind: ServiceAccount
-  name: prefect-worker
-  namespace: prefect  # Replace with your actual namespace
-roleRef:
-  kind: ClusterRole
-  name: prefect-worker-role
-  apiGroup: rbac.authorization.k8s.io
+rules:
+  # Framework: Event posting for progress/errors
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
+  
+  # Application: Core resources that workers need to create/manage
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Application: Batch resources for job management
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Application: Apps resources for deployment management
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Application: Storage resources
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Application: Networking resources
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies", "ingresses"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Application: RBAC resources (read-only for self-inspection)
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+    verbs: ["get", "list", "watch"]
 
 ---
-# Alternative: Namespace-scoped permissions (uncomment if you prefer namespace-scoped access)
-# Use this instead of the ClusterRole/ClusterRoleBinding above if you want to limit
-# worker permissions to a specific namespace only.
+# ClusterRoleBinding for cluster-wide permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prefect-worker-rolebinding-cluster
+  labels:
+    app.kubernetes.io/name: prefect-worker
+    app.kubernetes.io/component: worker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prefect-worker-role-cluster
+subjects:
+  - kind: ServiceAccount
+    name: prefect-worker
+    namespace: prefect  # Replace with your actual namespace
 
-# apiVersion: rbac.authorization.k8s.io/v1
-# kind: Role
-# metadata:
-#   name: prefect-worker-role
-#   namespace: prefect  # Replace with your actual namespace
-#   labels:
-#     app.kubernetes.io/name: prefect-worker
-#     app.kubernetes.io/component: worker
-# rules:
-# - apiGroups: [""]
-#   resources: ["pods", "services", "configmaps", "secrets", "events"]
-#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# - apiGroups: ["apps"]
-#   resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
-#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# - apiGroups: ["batch"]
-#   resources: ["jobs", "cronjobs"]
-#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# - apiGroups: ["networking.k8s.io"]
-#   resources: ["networkpolicies", "ingresses"]
-#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# - apiGroups: [""]
-#   resources: ["persistentvolumeclaims", "persistentvolumes"]
-#   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-# - apiGroups: [""]
-#   resources: ["api", "apis"]
-#   verbs: ["get", "list"]
-
-# ---
-# apiVersion: rbac.authorization.k8s.io/v1
-# kind: RoleBinding
-# metadata:
-#   name: prefect-worker-binding
-#   namespace: prefect  # Replace with your actual namespace
-#   labels:
-#     app.kubernetes.io/name: prefect-worker
-#     app.kubernetes.io/component: worker
-# subjects:
-# - kind: ServiceAccount
-#   name: prefect-worker
-#   namespace: prefect  # Replace with your actual namespace
-# roleRef:
-#   kind: Role
-#   name: prefect-worker-role
-#   apiGroup: rbac.authorization.k8s.io 
+---
+# RoleBinding for namespace-scoped permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: prefect  # Replace with your actual namespace
+  name: prefect-worker-rolebinding-namespaced
+  labels:
+    app.kubernetes.io/name: prefect-worker
+    app.kubernetes.io/component: worker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prefect-worker-role-namespaced
+subjects:
+  - kind: ServiceAccount
+    name: prefect-worker
+    namespace: prefect  # Replace with your actual namespace 
