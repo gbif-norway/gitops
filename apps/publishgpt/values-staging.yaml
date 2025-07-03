@@ -10,7 +10,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/publishgpt-back-end
-    tag: staging
+    tag: staging-0
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -62,7 +62,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/publishgpt-front-end
-    tag: staging
+    tag: staging-0
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
