@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "publishgpt.name" -}}
+{{- define "chatipt.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "publishgpt.fullname" -}}
+{{- define "chatipt.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "publishgpt.chart" -}}
+{{- define "chatipt.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "publishgpt.labels" -}}
-helm.sh/chart: {{ include "publishgpt.chart" . }}
-{{ include "publishgpt.selectorLabels" . }}
+{{- define "chatipt.labels" -}}
+helm.sh/chart: {{ include "chatipt.chart" . }}
+{{ include "chatipt.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "publishgpt.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "publishgpt.name" . }}
+{{- define "chatipt.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "chatipt.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "publishgpt.serviceAccountName" -}}
+{{- define "chatipt.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "publishgpt.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "chatipt.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -64,15 +64,15 @@ Create the name of the service account to use
 {{/*
 Selector labels for frontend
 */}}
-{{- define "publishgpt.frontendSelectorLabels" -}}
-{{ include "publishgpt.selectorLabels" . }}
+{{- define "chatipt.frontendSelectorLabels" -}}
+{{ include "chatipt.selectorLabels" . }}
 app.kubernetes.io/component: frontend
 {{- end }}
 
 {{/*
 Selector labels for backend
 */}}
-{{- define "publishgpt.backendSelectorLabels" -}}
-{{ include "publishgpt.selectorLabels" . }}
+{{- define "chatipt.backendSelectorLabels" -}}
+{{ include "chatipt.selectorLabels" . }}
 app.kubernetes.io/component: backend
 {{- end }}

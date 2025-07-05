@@ -12,7 +12,7 @@ podSecurityContext: {}
 backEnd:
   replicaCount: 1
   image:
-    repository: gbifnorway/publishgpt-back-end
+    repository: gbifnorway/chatipt-back-end
     tag: 33f3c36
     pullPolicy: Always
   imagePullSecrets: []
@@ -65,7 +65,7 @@ backEnd:
 frontEnd:
   replicaCount: 1
   image:
-    repository: gbifnorway/publishgpt-front-end
+    repository: gbifnorway/chatipt-front-end
     tag: 33f3c36
     pullPolicy: Always
   imagePullSecrets: []

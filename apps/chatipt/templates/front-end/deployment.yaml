@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "publishgpt.fullname" . }}-frontend
+  name: {{ include "chatipt.fullname" . }}-frontend
   labels:
-    {{- include "publishgpt.labels" . | nindent 4 }}
+    {{- include "chatipt.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
 spec:
   {{- if not .Values.frontEnd.autoscaling.enabled }}
@@ -11,7 +11,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "publishgpt.frontendSelectorLabels" . | nindent 6 }}
+      {{- include "chatipt.frontendSelectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.frontEnd.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "publishgpt.labels" . | nindent 8 }}
+        {{- include "chatipt.labels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
         {{- with .Values.frontEnd.podLabels }}
         {{- toYaml . | nindent 8 }}

@@ -1,5 +1,5 @@
 {{- if .Values.frontEnd.ingress.enabled -}}
-{{- $fullName := include "publishgpt.fullname" . -}}
+{{- $fullName := include "chatipt.fullname" . -}}
 {{- $svcPort := .Values.frontEnd.service.port -}}
 {{- if and .Values.frontEnd.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.frontEnd.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -17,7 +17,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}-frontend
   labels:
-    {{- include "publishgpt.labels" . | nindent 4 }}
+    {{- include "chatipt.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
   {{- with .Values.frontEnd.ingress.annotations }}
   annotations:
