@@ -34,7 +34,7 @@ backEnd:
       path: /ready
       port: http
   secretRef:
-    name: backend-env-secrets
+    name: chatipt-backend
 
   service:
     type: ClusterIP
