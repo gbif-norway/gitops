@@ -15,17 +15,16 @@ This directory contains the Kubernetes deployment for the Prefect worker that pr
 
 ### 1. Create Prefect API Key Secret
 
-You need to create the API key secret before deploying:
+You need to create the API key secret manually (not in GitOps):
 
 ```bash
-# Generate a Prefect API key (if you don't have one)
-prefect api-key create worker-key
-
-# Create the secret (replace with your actual API key)
+# Create the secret manually (replace with your actual API key)
 kubectl create secret generic prefect-api-key \
   --from-literal=api-key="your-api-key-here" \
   -n prefect
 ```
+
+**Note**: This secret is created manually and not stored in Git for security reasons.
 
 ### 2. Deploy with ArgoCD
 
