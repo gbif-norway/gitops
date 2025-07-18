@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prefect-worker
+  namespace: prefect
+  labels:
+    app: prefect-worker
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/name: prefect-worker
+    argocd.argoproj.io/instance: prefect-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prefect-worker
+  template:
+    metadata:
+      labels:
+        app: prefect-worker
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/name: prefect-worker
+        argocd.argoproj.io/instance: prefect-server
+    spec:
+      serviceAccountName: prefect-worker
+      containers:
+      - name: prefect-worker
+        image: gbifnorway/prefect-automations:latest
+        imagePullPolicy: Always
+        command: ["prefect", "worker", "start", "-p", "gbif-automations"]
+        env:
+        - name: PREFECT_API_URL
+          value: "https://prefect.svc.gbif.no/api"
+        - name: PREFECT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: prefect-basic-auth
+              key: auth-string
+        - name: PREFECT_DEBUG_MODE
+          value: "false"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          runAsUser: 1001
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        runAsUser: 1001
+        runAsNonRoot: true
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: Always

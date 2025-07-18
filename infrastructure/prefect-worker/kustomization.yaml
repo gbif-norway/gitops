@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prefect
+
+resources:
+- deployment.yaml
+
+commonLabels:
+  app.kubernetes.io/component: worker
+  app.kubernetes.io/name: prefect-worker
+  argocd.argoproj.io/instance: prefect-server
+
+images:
+- name: gbifnorway/prefect-automations
+  newTag: latest 
