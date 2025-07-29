@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+    nginx.ingress.kubernetes.io/proxy-body-size: 5000m
 spec:
   rules:
     - host: {{ default (print .Release.Name ".ipt.gbif.no") .Values.hostName }}
