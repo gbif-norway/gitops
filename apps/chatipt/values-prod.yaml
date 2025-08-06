@@ -13,7 +13,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: 2.0.0-fb2db35-20250708-123232-e11237a-20250708-124927
+    tag: 2.0.0-bb1bbec-20250805-175638
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -37,7 +37,7 @@ backEnd:
       path: /ready
       port: http
   secretRef:
-    name: backend-env-secrets
+    name: chatipt-backend
 
   service:
     type: ClusterIP
@@ -66,7 +66,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: 2.0.0-fb2db35-20250708-123232-e11237a-20250708-124927
+    tag: 2.0.0-bb1bbec-20250805-175638
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
