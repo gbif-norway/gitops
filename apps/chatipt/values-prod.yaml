@@ -13,7 +13,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: 2.0.0-9d739d3-20250821-130928
+    tag: 2.0.0-ac626fd-20250822-065238
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -66,7 +66,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: 2.0.0-9d739d3-20250821-130928
+    tag: 2.0.0-ac626fd-20250822-065238
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
