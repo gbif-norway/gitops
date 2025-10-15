@@ -1,4 +1,4 @@
-persistentStorage: 2Gi
+persistentStorage: 5Gi
 containerImageTag: latest
 pvcName: null
 hostName: null
