@@ -1,0 +1,19 @@
+{{- if .Values.backEnd.persistence.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "chatipt.fullname" . }}-backend
+  labels:
+    {{- include "chatipt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  accessModes:
+    - {{ .Values.backEnd.persistence.accessMode | default "ReadWriteOnce" }}
+  resources:
+    requests:
+      storage: {{ .Values.backEnd.persistence.size | default "10Gi" }}
+  {{- if .Values.backEnd.persistence.storageClassName }}
+  storageClassName: {{ .Values.backEnd.persistence.storageClassName }}
+  {{- end }}
+{{- end }}
+
