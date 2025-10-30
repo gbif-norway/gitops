@@ -26,7 +26,7 @@ backEnd:
   volumeMounts: []
   volumes: []
   persistence:
-    enabled: true
+    enabled: false
     size: 10Gi
     accessMode: ReadWriteOnce
     storageClassName: ""
