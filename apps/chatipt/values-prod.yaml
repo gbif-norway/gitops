@@ -28,6 +28,11 @@ backEnd:
   affinity: {}
   volumeMounts: []
   volumes: []
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessMode: ReadWriteOnce
+    storageClassName: do-block-storage-retain
   livenessProbe:
     httpGet:
       path: /healthz
