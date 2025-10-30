@@ -32,7 +32,7 @@ backEnd:
     enabled: true
     size: 10Gi
     accessMode: ReadWriteOnce
-    storageClassName: ""
+    storageClassName: do-block-storage-retain
   livenessProbe:
     httpGet:
       path: /healthz
