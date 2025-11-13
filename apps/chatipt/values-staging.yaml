@@ -10,7 +10,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: staging-7799256-20251112-204429
+    tag: staging-3e0d0e4-20251113-081926
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -67,7 +67,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: staging-7799256-20251112-204429
+    tag: staging-3e0d0e4-20251113-081926
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
