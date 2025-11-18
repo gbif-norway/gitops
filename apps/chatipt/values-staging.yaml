@@ -52,6 +52,7 @@ backEnd:
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "200m"
     hosts:
       - host: staging-api.chatipt.svc.gbif.no
         paths:
