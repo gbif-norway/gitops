@@ -10,7 +10,7 @@ backEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: staging-c2322d6-20250917-142121
+    tag: staging-684e271-20251127-045630
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -25,6 +25,11 @@ backEnd:
   affinity: {}
   volumeMounts: []
   volumes: []
+  persistence:
+    enabled: false
+    size: 10Gi
+    accessMode: ReadWriteOnce
+    storageClassName: ""
   livenessProbe:
     httpGet:
       path: /healthz
@@ -47,6 +52,10 @@ backEnd:
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     hosts:
       - host: staging-api.chatipt.svc.gbif.no
         paths:
@@ -62,7 +71,7 @@ frontEnd:
   replicaCount: 1
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: staging-c2322d6-20250917-142121
+    tag: staging-684e271-20251127-045630
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}

@@ -49,3 +49,14 @@ spec:
                 name: {{ .Values.backEnd.secretRef.name }}
           resources:
             {{- toYaml .Values.backEnd.resources | nindent 12 }}
+          {{- if .Values.backEnd.persistence.enabled }}
+          volumeMounts:
+            - name: user-files-storage
+              mountPath: /app/user_files
+          {{- end }}
+      {{- if .Values.backEnd.persistence.enabled }}
+      volumes:
+        - name: user-files-storage
+          persistentVolumeClaim:
+            claimName: {{ include "chatipt.fullname" . }}-backend
+      {{- end }}
