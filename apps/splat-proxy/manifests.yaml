@@ -12,6 +12,8 @@ spec:
       labels:
         app: slpat-proxy
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: proxy
         image: ghcr.io/gbif-norway/splat-proxy:latest
