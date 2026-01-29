@@ -43,6 +43,8 @@ metadata:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: 10000m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     # Add cert-manager annotations if you have it
     # cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
