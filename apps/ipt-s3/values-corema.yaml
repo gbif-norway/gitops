@@ -2,4 +2,3 @@ persistentStorage: 3Gi
 containerImageTag: latest
 pvcName: null
 hostName: null
-zipBucket: corema-exports/gbif

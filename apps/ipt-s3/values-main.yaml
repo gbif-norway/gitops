@@ -6,4 +6,3 @@ persistentStorage: 40Gi
 containerImageTag: latest
 pvcName: null
 hostName: ipt.gbif.no
-zipBucket: null

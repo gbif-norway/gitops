@@ -52,8 +52,6 @@ spec:
               secretKeyRef:
                 name: s3-secret
                 key: s3-secret-key
-          - name: S3_ZIP_BUCKET_NAME
-            value: {{ .Values.zipBucket }}
           - name: DISCORD_WEBHOOK_URL
             valueFrom:
               secretKeyRef:
