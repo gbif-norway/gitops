@@ -1,4 +1,0 @@
-persistentStorage: 1Gi
-containerImageTag: latest
-pvcName: null
-hostName: null
