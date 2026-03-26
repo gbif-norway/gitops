@@ -11,16 +11,23 @@ podSecurityContext: {}
 
 backEnd:
   replicaCount: 1
+  strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: 2.0.0-973f3ac-20260317-150541
+    tag: 2.0.0-8f10494-20251125-144327
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
   securityContext: {}
-  resources: {}
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1536Mi
+    limits:
+      cpu: "1500m"
+      memory: 3Gi
   autoscaling:
     enabled: false
   nodeSelector: {}
@@ -31,8 +38,12 @@ backEnd:
   persistence:
     enabled: true
     size: 10Gi
-    accessMode: ReadWriteOnce
-    storageClassName: do-block-storage-retain
+    accessMode: ReadWriteMany
+    storageClassName: ""
+    # If set, reuse an existing PVC and skip creating chatipt-backend PVC.
+    existingClaim: "573890b9-3346-4027-ab0c-22eec6dfd665"
+    # Optional subPath inside the PVC (useful when sharing one PVC between apps/environments).
+    subPath: "chatipt-prod-user-files"
   livenessProbe:
     httpGet:
       path: /healthz
@@ -51,7 +62,7 @@ backEnd:
 
   ingress:
     enabled: true
-    className: ""
+    className: nginx
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
@@ -73,9 +84,10 @@ backEnd:
 
 frontEnd:
   replicaCount: 1
+  strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: 2.0.0-973f3ac-20260317-150541
+    tag: 2.0.0-8f10494-20251125-144327
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -106,7 +118,7 @@ frontEnd:
 
   ingress:
     enabled: true
-    className: ""
+    className: nginx
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
