@@ -9,6 +9,8 @@ spec:
   {{- if not .Values.backEnd.autoscaling.enabled }}
   replicas: {{ .Values.backEnd.replicaCount }}
   {{- end }}
+  strategy:
+    type: {{ default "RollingUpdate" .Values.backEnd.strategyType }}
   selector:
     matchLabels:
       {{- include "chatipt.backendSelectorLabels" . | nindent 6 }}
@@ -37,6 +39,10 @@ spec:
             {{- toYaml .Values.backEnd.securityContext | nindent 12 }}
           image: "{{ .Values.backEnd.image.repository }}{{- if .Values.backEnd.image.tag }}:{{ .Values.backEnd.image.tag }}{{- end }}"
           imagePullPolicy: {{ .Values.backEnd.image.pullPolicy }}
+          {{- with .Values.backEnd.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.backEnd.service.targetPort }}
@@ -53,10 +59,13 @@ spec:
           volumeMounts:
             - name: user-files-storage
               mountPath: /app/user_files
+              {{- with .Values.backEnd.persistence.subPath }}
+              subPath: {{ . | quote }}
+              {{- end }}
           {{- end }}
       {{- if .Values.backEnd.persistence.enabled }}
       volumes:
         - name: user-files-storage
           persistentVolumeClaim:
-            claimName: {{ include "chatipt.fullname" . }}-backend
+            claimName: {{ default (printf "%s-backend" (include "chatipt.fullname" .)) .Values.backEnd.persistence.existingClaim }}
       {{- end }}

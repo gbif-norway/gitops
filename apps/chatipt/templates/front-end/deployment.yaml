@@ -9,6 +9,8 @@ spec:
   {{- if not .Values.frontEnd.autoscaling.enabled }}
   replicas: {{ .Values.frontEnd.replicaCount }}
   {{- end }}
+  strategy:
+    type: {{ default "RollingUpdate" .Values.frontEnd.strategyType }}
   selector:
     matchLabels:
       {{- include "chatipt.frontendSelectorLabels" . | nindent 6 }}
