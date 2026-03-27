@@ -1,37 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: annotater
+  name: annotater-web
+  labels:
+    app: annotater-web
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: annotater
+      app: annotater-web
   template:
     metadata:
       labels:
-        app: annotater
+        app: annotater-web
     spec:
       containers:
-        - name: annotater
+        - name: annotater-web
           image: gbifnorway/annotater:latest
           imagePullPolicy: Always
-          env:
-            - name: SQL_HOST
-              value: db-pgsql-gbif-norway-do-user-11560878-0.b.db.ondigitalocean.com
-            - name: SQL_PORT
-              value: '25060'
-            - name: SQL_ENGINE
-              value: django.db.backends.postgresql
-            - name: SQL_DATABASE
-              value: annotater
-            - name: SQL_USER
-              value: doadmin
-            - name: SQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: pgsql-secret
-                  key: password
+          envFrom:
+            - secretRef:
+                name: annotater-env
+          ports:
+            - containerPort: 8080
+              name: http
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
           resources:
             limits:
               memory: 512Mi

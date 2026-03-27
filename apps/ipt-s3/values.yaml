@@ -6,11 +6,11 @@ pvcSubPath: null
 
 resources:
   limits:
-    memory: 2Gi
-    cpu: "1.5"
+    memory: 1536Mi
+    cpu: "1"
   requests:
-    memory: 1Gi
-    cpu: "0.75"
+    memory: 768Mi
+    cpu: "0.5"
 
 ingressClassName: nginx
 hostName: null
