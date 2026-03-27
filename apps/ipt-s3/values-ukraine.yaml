@@ -1,4 +1,3 @@
-persistentStorage: 4Gi
-containerImageTag: latest
-pvcName: null
-hostName: null
+replicas: 1
+pvcSubPath: ipt-ukraine
+hostName: ukraine.ipt.gbif.no

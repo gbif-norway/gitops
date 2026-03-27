@@ -1,4 +1,3 @@
-persistentStorage: 5Gi
-containerImageTag: latest
-pvcName: null
-hostName: null
+replicas: 1
+pvcSubPath: ipt-slovakia
+hostName: slovakia.ipt.gbif.no

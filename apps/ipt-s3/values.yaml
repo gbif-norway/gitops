@@ -1,8 +1,16 @@
-# Default values for ipt-s3.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-persistentStorage: 1G
 containerImageTag: latest
-pvcName: null
-hostName: null #ipt.gbif.no
+replicas: 1
+
+sharedPvcName: 573890b9-3346-4027-ab0c-22eec6dfd665
+pvcSubPath: null
+
+resources:
+  limits:
+    memory: 2Gi
+    cpu: "1.5"
+  requests:
+    memory: 1Gi
+    cpu: "0.75"
+
+ingressClassName: nginx
+hostName: null
