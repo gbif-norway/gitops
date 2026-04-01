@@ -14,7 +14,7 @@ backEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: 2.0.0-75fdf3d-20260401-145410-frontendfix
+    tag: 2.0.0-75fdf3d-20260401-115054
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -87,7 +87,7 @@ frontEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: 2.0.0-75fdf3d-20260401-115054
+    tag: 2.0.0-75fdf3d-20260401-145410-frontendfix
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
