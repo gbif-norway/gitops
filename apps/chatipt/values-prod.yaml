@@ -11,7 +11,7 @@ podSecurityContext: {}
 
 backEnd:
   replicaCount: 1
-  strategyType: RollingUpdate
+  strategyType: Recreate
   image:
     repository: gbifnorway/chatipt-back-end
     tag: 2.0.0-ac258ef-20260407-150604
