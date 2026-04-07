@@ -14,7 +14,7 @@ backEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: 2.0.0-75fdf3d-20260401-115054
+    tag: 2.0.0-88bdfc3-20260407-114548
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}

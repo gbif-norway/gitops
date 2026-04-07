@@ -11,7 +11,7 @@ backEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: staging-684e271-20251127-045630
+    tag: staging-88bdfc3-20260407-114548
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
