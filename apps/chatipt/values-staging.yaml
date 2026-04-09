@@ -11,7 +11,7 @@ backEnd:
   strategyType: Recreate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: staging-ac258ef-20260407-150604
+    tag: staging-ec8452b-20260409-112001
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -83,7 +83,7 @@ frontEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: staging-888494b-20260408-070203
+    tag: staging-ec8452b-20260409-112001
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
