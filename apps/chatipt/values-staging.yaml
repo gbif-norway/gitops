@@ -11,7 +11,7 @@ backEnd:
   strategyType: Recreate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: staging-ec8452b-20260409-112001
+    tag: staging-5eed0a3-20260409-153555
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
