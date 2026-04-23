@@ -1,4 +1,4 @@
-containerImageTag: 3.2.3
+containerImageTag: 3.3.1
 replicas: 1
 
 sharedPvcName: 573890b9-3346-4027-ab0c-22eec6dfd665
