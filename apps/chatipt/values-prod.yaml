@@ -87,7 +87,7 @@ frontEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: 2.0.0-05dbf20-next16-20260410-104252
+    tag: 2.0.0-df7ddb9-20260427-044253
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
