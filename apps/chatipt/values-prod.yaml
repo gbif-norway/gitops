@@ -24,10 +24,10 @@ backEnd:
   resources:
     requests:
       cpu: 500m
-      memory: 3Gi
+      memory: 4Gi
     limits:
       cpu: "1500m"
-      memory: 6Gi
+      memory: 8Gi
   autoscaling:
     enabled: false
   nodeSelector: {}
