@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tdwg2026
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: tdwg2026.svc.gbif.no
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: tdwg2026
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - tdwg2026.svc.gbif.no
+      secretName: tdwg2026-tls
