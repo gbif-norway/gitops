@@ -6,6 +6,9 @@ metadata:
     app: tdwg2026
 spec:
   replicas: 1
+  # The quota can't hold two pods at once, so replace the pod instead of rolling.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: tdwg2026
