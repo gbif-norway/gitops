@@ -19,7 +19,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: tdwg2026
-          image: gbifnorway/tdwg2026:latest
+          image: gbifnorway/tdwg2026:9734908-local
           imagePullPolicy: Always
           ports:
             - containerPort: 8787
