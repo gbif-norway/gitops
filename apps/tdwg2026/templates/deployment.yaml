@@ -19,7 +19,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: tdwg2026
-          image: gbifnorway/tdwg2026:9734908-local
+          image: gbifnorway/tdwg2026:48fa94f-local
           imagePullPolicy: Always
           ports:
             - containerPort: 8787
@@ -39,10 +39,12 @@ spec:
               port: http
             initialDelaySeconds: 30
             periodSeconds: 20
+          # The namespace quota has ~350Mi of memory limits left; the server peaks around 300Mi.
+          # The LimitRange caps limits at 2x requests.
           resources:
             requests:
               cpu: 200m
-              memory: 512Mi
+              memory: 170Mi
             limits:
               cpu: "1"
-              memory: 1Gi
+              memory: 340Mi
