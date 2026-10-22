@@ -63,7 +63,8 @@ backEnd:
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+      # Headroom over the 200 MB front-end upload limit (NEXT_PUBLIC_MAX_UPLOAD_MB) for multipart overhead.
+      nginx.ingress.kubernetes.io/proxy-body-size: "210m"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
