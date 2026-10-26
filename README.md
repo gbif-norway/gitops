@@ -12,23 +12,19 @@ Argo CD may exist in the cluster, but it is not required for routine deployment 
 
 ## App Deployment Model (Current)
 
-1. `chatipt` and `chatipt-staging`: Helm releases from this repo.
+1. `chatipt`: Helm release from this repo (there is no staging release since 2026-10-26).
 2. `annotater`: static Kubernetes manifests from this repo.
 3. `ipt` deployments (`main/corema/slovakia/ukraine`): maintained in `ipt-s3` repo (`k8s/nird`).
 4. `resolver`: maintained in `resolver-docker` repo (`k8s/nird`).
 
 ## Deploy Commands
 
-### ChatIPT (prod + staging)
+### ChatIPT
 
 ```bash
 helm upgrade --install chatipt /Users/rukayasj/Projects/gitops/apps/chatipt \
   -n gbif-no-ns8095k \
   -f /Users/rukayasj/Projects/gitops/apps/chatipt/values-prod.yaml
-
-helm upgrade --install chatipt-staging /Users/rukayasj/Projects/gitops/apps/chatipt \
-  -n gbif-no-ns8095k \
-  -f /Users/rukayasj/Projects/gitops/apps/chatipt/values-staging.yaml
 ```
 
 ### Annotater
