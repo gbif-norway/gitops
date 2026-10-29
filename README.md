@@ -21,11 +21,21 @@ Argo CD may exist in the cluster, but it is not required for routine deployment 
 
 ### ChatIPT
 
+ChatIPT's GitHub Actions workflow builds and publishes both images on pushes to
+`main`. Once the whole workflow succeeds, copy the deployment command from its
+summary and run it from the application checkout:
+
 ```bash
-helm upgrade --install chatipt /Users/rukayasj/Projects/gitops/apps/chatipt \
-  -n gbif-no-ns8095k \
-  -f /Users/rukayasj/Projects/gitops/apps/chatipt/values-prod.yaml
+cd /Users/rukayasj/Projects/chatipt
+./scripts/deploy-prod.sh --tag sha-FULL_COMMIT_SHA
 ```
+
+Replace `FULL_COMMIT_SHA` with the full commit hash from that successful build.
+The script verifies both images exist, updates this repository's
+`apps/chatipt/values-prod.yaml`, commits and pushes the values, deploys with Helm,
+and checks the rollout. It does not build or push images. GitHub pushes alone do
+not deploy production. For full instructions, see `../chatipt/DEPLOYMENT.md`.
+There is no staging release.
 
 ### Annotater
 
