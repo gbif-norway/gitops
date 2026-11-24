@@ -14,7 +14,7 @@ backEnd:
   strategyType: Recreate
   image:
     repository: gbifnorway/chatipt-back-end
-    tag: sha-ab2e63b671f6b20240a9079c1905d1a7c3b7166b
+    tag: sha-ae13b22d90cb00d94c86a383558befef2660fbce
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
@@ -88,7 +88,7 @@ frontEnd:
   strategyType: RollingUpdate
   image:
     repository: gbifnorway/chatipt-front-end
-    tag: sha-ab2e63b671f6b20240a9079c1905d1a7c3b7166b
+    tag: sha-ae13b22d90cb00d94c86a383558befef2660fbce
     pullPolicy: Always
   imagePullSecrets: []
   podAnnotations: {}
